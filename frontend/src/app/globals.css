@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --espresso: #2c1810;
+  --espresso-light: #4a2f23;
+  --cream: #faf3eb;
+  --cream-dark: #f0e4d4;
+  --copper: #b87333;
+  --copper-light: #d4956a;
+  --roast-red: #8b3a2a;
+  --success: #2d6a4f;
+  --warning: #bc6c25;
+  --danger: #9b2226;
+  --info: #457b9d;
+
+  --bg-primary: var(--cream);
+  --bg-secondary: #fffdf9;
+  --bg-nav: var(--espresso);
+  --text-primary: var(--espresso);
+  --text-muted: #6b5344;
+  --text-nav: var(--cream);
+  --text-nav-muted: #c4a882;
+  --border-color: #e8dcc8;
+  --accent: var(--copper);
+}
+
+.dark {
+  --bg-primary: #1a100a;
+  --bg-secondary: #241810;
+  --bg-nav: #120a06;
+  --text-primary: var(--cream);
+  --text-muted: #a89078;
+  --text-nav: var(--cream);
+  --text-nav-muted: #8a7560;
+  --border-color: #3d2a1e;
+  --accent: var(--copper-light);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.stat-card {
+  @apply rounded-xl p-4 flex flex-col gap-1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.badge-success { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(45, 106, 79, 0.15); color: var(--success); }
+.badge-warning { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(188, 108, 37, 0.15); color: var(--warning); }
+.badge-danger { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(155, 34, 38, 0.15); color: var(--danger); }
+.badge-info { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(69, 123, 157, 0.15); color: var(--info); }
+.badge-gold { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(184, 115, 51, 0.2); color: var(--copper); }
+
+.btn-primary {
+  @apply px-4 py-2 rounded-lg font-medium transition-colors;
+  background: var(--copper);
+  color: white;
+}
+.btn-primary:hover { background: var(--copper-light); }
+
+.input-field {
+  @apply w-full px-3 py-2 rounded-lg text-sm outline-none transition-colors;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.input-field:focus { border-color: var(--copper); }
+
+.card {
+  @apply rounded-xl p-5;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}

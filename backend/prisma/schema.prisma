@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Roastery {
+  id        String   @id @default(uuid())
+  name      String
+  address   String   @default("")
+  city      String   @default("")
+  district  String   @default("")
+  phone     String   @default("")
+  email     String   @default("")
+  taxNo     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users         User[]
+  customers     Customer[]
+  cuppings      Cupping[]
+  orders        Order[]
+  roastProfiles RoastProfile[]
+  greenBeans    GreenBean[]
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole @default(roaster)
+  specialty    String   @default("")
+  roasteryId   String
+  roastery     Roastery @relation(fields: [roasteryId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum UserRole {
+  admin
+  roaster
+  sales
+  quality
+}
+
+model Customer {
+  id          String    @id @default(uuid())
+  companyName String
+  contactName String    @default("")
+  phone       String
+  email       String    @default("")
+  address     String    @default("")
+  city        String    @default("")
+  notes       String    @default("")
+  roasteryId  String
+  roastery    Roastery  @relation(fields: [roasteryId], references: [id])
+  cuppings    Cupping[]
+  orders      Order[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum CuppingType {
+  quality_check
+  sample_tasting
+  training
+  wholesale_visit
+}
+
+enum CuppingStatus {
+  scheduled
+  confirmed
+  in_progress
+  completed
+  cancelled
+  no_show
+}
+
+model Cupping {
+  id           String        @id @default(uuid())
+  date         DateTime
+  duration     Int           @default(45)
+  type         CuppingType   @default(sample_tasting)
+  status       CuppingStatus @default(scheduled)
+  notes        String        @default("")
+  roasterName  String        @default("")
+  customerId   String
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  roasteryId   String
+  roastery     Roastery      @relation(fields: [roasteryId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum OrderStatus {
+  quoted
+  confirmed
+  roasting
+  packed
+  shipped
+  cancelled
+}
+
+enum RoastLevel {
+  light
+  medium
+  medium_dark
+  dark
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  productName   String      @default("")
+  weightKg      Float       @default(5)
+  roastLevel    RoastLevel  @default(medium)
+  status        OrderStatus @default(quoted)
+  totalPrice    Float       @default(0)
+  paidAmount    Float       @default(0)
+  orderDate     DateTime
+  deliveryDate  DateTime?
+  notes         String      @default("")
+  customerId    String
+  customer      Customer    @relation(fields: [customerId], references: [id])
+  roastProfileId String?
+  roastProfile  RoastProfile? @relation(fields: [roastProfileId], references: [id])
+  roasteryId    String
+  roastery      Roastery    @relation(fields: [roasteryId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model RoastProfile {
+  id           String     @id @default(uuid())
+  name         String
+  origin       String     @default("")
+  variety      String     @default("")
+  roastLevel   RoastLevel @default(medium)
+  chargeTemp   Int        @default(200)
+  dropTemp     Int        @default(215)
+  durationMin  Int        @default(12)
+  description  String     @default("")
+  roasteryId   String
+  roastery     Roastery   @relation(fields: [roasteryId], references: [id])
+  orders       Order[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum BeanOrigin {
+  ethiopia
+  colombia
+  brazil
+  kenya
+  guatemala
+  indonesia
+  turkey
+  other
+}
+
+enum ProcessingMethod {
+  washed
+  natural
+  honey
+  anaerobic
+  other
+}
+
+model GreenBean {
+  id         String           @id @default(uuid())
+  name       String
+  origin     BeanOrigin       @default(other)
+  processing ProcessingMethod @default(washed)
+  stockKg    Float            @default(0)
+  unitCost   Float            @default(0)
+  supplier   String           @default("")
+  harvestYear Int             @default(2024)
+  notes      String           @default("")
+  roasteryId String
+  roastery   Roastery         @relation(fields: [roasteryId], references: [id])
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}

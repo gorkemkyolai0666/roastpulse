@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: roastpulse
+      POSTGRES_PASSWORD: roastpulse123
+      POSTGRES_DB: roastpulse
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "4038:4038"
+    environment:
+      DATABASE_URL: postgresql://roastpulse:roastpulse123@postgres:5432/roastpulse?schema=public
+      JWT_SECRET: roastpulse-dev-secret
+      FRONTEND_URL: http://localhost:3038
+      PORT: 4038
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3038:3038"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4038/api
+
+volumes:
+  pgdata:
